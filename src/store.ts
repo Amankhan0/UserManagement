@@ -3,12 +3,14 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import apireducer from './features/apireducer';
 import paginationreducer from './features/paginationreducer';
 import userreducer from './features/userreducer';
+import userRoleSlice from './features/UserRoleSlice';
 
 export const store = configureStore({
     reducer: {
         UserManagementReducer:userreducer,
         ApiReducer:apireducer,
-        PaginationReducer:paginationreducer
+        PaginationReducer:paginationreducer,
+        UserRoleSlice:userRoleSlice
     },
 });
 
