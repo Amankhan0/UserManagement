@@ -26,6 +26,15 @@ export const checkUserValidation = (json: any): Promise<Record<string, string>> 
         if (!json.roleId || json.roleId === '') {
             Object.assign(errorJson, { roleId: 'Role is required' });
         }
+        if (!json.password || json.password === '') {
+            Object.assign(errorJson, { password: 'password is required' });
+        }
+        if (!json.confirmpassword || json.confirmpassword === '') {
+            Object.assign(errorJson, { confirmpassword: 'Confirm password is required' });
+        }
+        if (json.confirmpassword !== json.password) {
+            Object.assign(errorJson, { password: "Password or confirm password doesn't match", confirmpassword: 'Confirm password is required' });
+        }
         resolve(errorJson);
     });
 };

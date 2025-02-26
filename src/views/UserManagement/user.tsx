@@ -1,7 +1,7 @@
 import { ObjIsEmpty } from "../../utils/utils";
 import CustomTable from "../../components/ui/table/CustomTable";
 import { buttonClass, deleteUser, searchRole, searchUser, tableThClass } from "../../constants/constants";
-import { setUserData } from "../../features/userreducer";
+import { setUserData } from "../../features/UserManagementReducer";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store";
@@ -18,7 +18,7 @@ const UserManagement = () => {
     var th = ['S.No.', 'Full Name', 'Email', 'Contact', 'Role Type', 'State', 'City', 'Address', 'Action']
 
     const UserManagementReducer = useSelector((state: RootState) => state.UserManagementReducer);
-    const PaginationReducer = useSelector((state: RootState) => state.PaginationReducer);
+    const PaginationReducer = useSelector((state: RootState) => state.UserPaginationReducer);
     const dispatch = useDispatch()
 
     const [screen, setScreen] = useState('view')
@@ -37,6 +37,8 @@ const UserManagement = () => {
 
             }
         }
+        console.log('searchUser',searchUser);
+        
         ApiHit(json, searchUser).then((result) => {
             if (result?.statusCode === 200) {
                 dispatch(setUserData(result))

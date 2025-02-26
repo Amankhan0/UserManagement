@@ -9,12 +9,11 @@ import { addUser, searchRole } from "../../constants/constants";
 import { DistrictData } from "../../views/districtData";
 import { checkUserValidation } from "./userValidation";
 import { ObjIsEmpty, regexEmail } from "../../utils/utils";
-import { setApiJson, setApiJsonError } from "../../features/apireducer";
+import { setApiJson, setApiJsonError } from "../../features/UserApiReducer";
 import CustomTitle from "../../components/ui/title/CustomTitle";
 import { leftArrow } from "../../components/icons/icons";
-import { setUserData } from "../../features/userreducer";
+import { setUserData } from "../../features/UserManagementReducer";
 import { roleDataArr, roleDoc, setRoleData } from "../../features/UserRoleSlice";
-import toast from "react-hot-toast";
 
 interface Props {
     setPage?: (value: string) => void;
@@ -22,7 +21,7 @@ interface Props {
 
 const AddUser = ({ setPage }: Props) => {
 
-    const ApiReducer = useSelector((state: RootState) => state.ApiReducer);
+    const ApiReducer = useSelector((state: RootState) => state.UserApiReducer);
     const UserRoleSlice = useSelector((state: RootState) => state.UserRoleSlice);
     
     const dispatch = useDispatch()
@@ -89,24 +88,28 @@ const AddUser = ({ setPage }: Props) => {
                 );
                 const roleId = foundRole?._id;
                 if(roleId){
-                    var json = {
-                        fullName:ApiReducer?.apiJson?.fullName,
-                        email:ApiReducer?.apiJson?.email,
-                        contactNo:ApiReducer?.apiJson?.contactno,
-                        state:ApiReducer?.apiJson?.state,
-                        city:ApiReducer?.apiJson?.city,
-                        address:ApiReducer?.apiJson?.address,
-                        roleType:ApiReducer?.apiJson?.roleType,
-                        roleId:roleId,
-                        password:'Aman@123'
-                    }
-                    console.log('json',json);
-                    ApiHit(json,addUser).then(res=>{
-                        if(res?.statusCode === 201){
-                            toast.success('User created successfully')
-                            onClickBack()
+                    if(ApiReducer?.apiJson?.password===ApiReducer?.apiJson?.confirmpassword){
+                        var json = {
+                            fullName:ApiReducer?.apiJson?.fullName,
+                            email:ApiReducer?.apiJson?.email,
+                            contactNo:ApiReducer?.apiJson?.contactno,
+                            state:ApiReducer?.apiJson?.state,
+                            city:ApiReducer?.apiJson?.city,
+                            address:ApiReducer?.apiJson?.address,
+                            roleType:ApiReducer?.apiJson?.roleType,
+                            roleId:roleId,
+                            password:ApiReducer?.apiJson?.password
                         }
-                    })
+                        ApiHit(json,addUser).then(res=>{
+                            if(res?.statusCode === 201){
+                                alert('User created successfully')
+                                onClickBack()
+                            }
+                        })
+                    }
+                    else{
+                        alert('password dosent match')
+                    }
                 }
             }
         });
@@ -144,6 +147,10 @@ const AddUser = ({ setPage }: Props) => {
                 <div className="grid grid-cols-2 gap-2 mt-5">
                     <CustomSelect onChange={(e) => onChangeRoleType(e.target.value)} placeholder={'Select role type'} options={['Super Admin', 'Client Admin']} name="roleType" title="Select Role Type" error={!ApiReducer?.apiJson?.roleType} />
                     <CustomSelect disabled={role?.length === 0} placeholder={'Select role'} options={role} name="roleId" title="Select Role" error={!ApiReducer?.apiJson?.roleId} />
+                </div>
+                <div className="grid grid-cols-2 gap-3 mt-5">
+                    <CustomInput type="string" name="password" placeholder="Enter password" title="Password" error={!ApiReducer?.apiJson?.password} />
+                    <CustomInput type="string" name="confirmpassword" placeholder="Enter confirm password" title="Confirm Password" error={!ApiReducer?.apiJson?.confirmpassword || ApiReducer?.apiJson?.confirmpassword !== ApiReducer?.apiJson?.password} />
                 </div>
                 <div className="mt-5">
                     <CustomButton onClick={() => onClickSubmit()} title="Submit" />

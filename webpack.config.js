@@ -38,10 +38,22 @@ module.exports = {
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: "applicationmanagement",
+      name: "usermanagement",
       filename: "remoteEntry.js",
       exposes: {
-        "./applicationmanagement": "./src/App",
+        "./store": "./src/store",
+        "./usermanagement": "./src/App",
+        "./UserApiReducer": "./src/features/UserApiReducer",
+        "./UserManagementReducer": "./src/features/UserManagementReducer",
+        "./UserPaginationReducer": "./src/features/UserPaginationReducer",
+        "./UserRoleSlice": "./src/features/UserRoleSlice",
+      },
+      shared: {
+        react: { singleton: true, requiredVersion: "18", eager: true },
+        "react-dom": { singleton: true, requiredVersion: "18", eager: true },
+        "react-redux": { singleton: true, requiredVersion: "^9.2.0", eager: true },
+        "react-router-dom": { singleton: true, requiredVersion: "^7.1.3", eager: true },
+        "@reduxjs/toolkit": { singleton: true, requiredVersion: "^2.5.1", eager: true },
       },
     }),
     new HtmlWebpackPlugin({
